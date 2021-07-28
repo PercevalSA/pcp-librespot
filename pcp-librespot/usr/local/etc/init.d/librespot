@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# Version: 6.1.0 2020-08-26
+
+PNAME="Spotify-Connect"
+DESC="Librespot Spotify Connect Player"
+TCEMNT="/mnt/$(readlink /etc/sysconfig/tcedir | cut -d '/' -f3)"
+PIDFILE=/var/run/librespot/librespot.pid
+
+# Set DAEMON to the actual binary
+[ -f $TCEMNT/tce/librespot ] && DAEMON=`readlink $TCEMNT/tce/librespot` || DAEMON=/usr/local/sbin/librespot
+
+# Read from config file
+. /usr/local/etc/pcp/pcp.cfg
+
+case "$1" in
+	start)
+		echo "Starting $DESC: $PNAME..."
+		if [ -e $PIDFILE ]; then
+			rm $PIDFILE
+		fi
+		start-stop-daemon --start --quiet --exec $DAEMON \
+			-- -n "Enclume" -b 320 \
+			-- -c /tmp/spoticache --cache-size-limit 100M \
+			-- --backend alsa --enable-volume-normalisation --initial-volume 30 \
+			-- --device-type speaker --autoplay
+	;;
+	stop)
+		echo "Stopping $DESC: $PNAME..."
+		start-stop-daemon --stop --quiet --exec $DAEMON
+	;;
+	restart)
+		echo "Restarting $DESC..."
+		$0 stop
+		sleep 1
+		$0 start
+	;;
+	status)
+		# Check if shairport-sync daemon is running
+		PID=$(ps -ef | grep $DAEMON | grep -v grep | awk '{ print $1 }')
+		if [ 0$PID -gt 0 ]; then
+			echo "$PNAME is running."
+			exit 0
+		else
+			echo "$PNAME not running."
+			exit 1
+		fi
+	;;
+	*)
+		echo
+		echo -e "Usage: $0 [start|stop|restart|status]"
+		echo
+		exit 1
+	;;
+esac
+
+exit 0
