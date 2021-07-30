@@ -28,7 +28,7 @@ tce-load -i pcp-librespot
 ```
 ## creation
 
-Librespot must be cross-compiled and placed in the `sbin` folder as `librespot`.
+Librespot must be cross-compiled and placed in the `sbin` folder as `librespot`. Don't forget to `chmod +x librespot` before creating the tcz extension.
 
 ### Cross Compilation
 Cross compilation of Librespot for RaspberryPi on Linux (raspbian, TinyCoreLinux, PiCore Linux...)
@@ -129,6 +129,7 @@ you might need to specify  `-L "/usr/lib/arm-linux-gnueabihf"` for building.
 copy the binary into the package
 ```bash
 cp target/armv7-unknown-linux-gnueabihf/release/librespot ../pcp-librespot/usr/local/sbin/
+chmod +x ../pcp-librespot/usr/local/sbin/librespot
 ```
 you can create the extension go to the begining of the readme
 

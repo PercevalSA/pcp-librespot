@@ -4,7 +4,7 @@ echo "${GREEN}Starting Spotify Connect"
 
 /usr/local/sbin/librespot -n "Enclume" -b 320 \
 -c /tmp/spoticache --cache-size-limit 100M \
---backend alsa --enable-volume-normalisation --initial-volume 30 \
+--backend alsa --enable-volume-normalisation --initial-volume 20 \
 --device-type speaker --autoplay
 
 # 2>&1 >> /var/log/librespot.log
